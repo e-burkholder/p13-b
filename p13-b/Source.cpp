@@ -4,10 +4,10 @@
 #include <string>
 using namespace std;
 
+
 bool isLeapYear(int year) {
     return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
 }
-
 int getNumberOfDays(int month, int year) {
     if (month == 2) {
         return isLeapYear(year) ? 29 : 28;
@@ -19,7 +19,6 @@ int getNumberOfDays(int month, int year) {
         return 31;
     }
 }
-
 int getMonthNumber(const string& month) {
     if (month == "January") return 1;
     if (month == "February") return 2;
@@ -35,7 +34,6 @@ int getMonthNumber(const string& month) {
     if (month == "December") return 12;
     return -1; // Invalid month
 }
-
 void displayCalendar(int month, int year) {
     cout << "   --- " << month << "/" << year << " ---" << endl;
     cout << " Sun Mon Tue Wed Thu Fri Sat" << endl;
@@ -67,7 +65,6 @@ void displayCalendar(int month, int year) {
         cout << endl;
     }
 }
-
 void displayCalendar(int month, int year, ofstream& outputFile) {
     outputFile << "   --- " << month << "/" << year << " ---" << endl;
     outputFile << " Sun Mon Tue Wed Thu Fri Sat" << endl;
@@ -99,7 +96,6 @@ void displayCalendar(int month, int year, ofstream& outputFile) {
         outputFile << endl;
     }
 }
-
 int main() {
     string inputMonth;
     int year;
