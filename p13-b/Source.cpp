@@ -40,7 +40,7 @@ void displayCalendar(int month, int year) {
 
     // Get the day of the week for the first day of the month
     int startDay = getNumberOfDays(1, year);
-    startDay = (startDay + 1) % 7; // 0 for Sunday, 1 for Monday, ...
+    startDay = (startDay + 1) % 7+1; // 0 for Sunday, 1 for Monday, ...
 
     int daysInMonth = getNumberOfDays(month, year);
     int day = 1;
@@ -57,7 +57,7 @@ void displayCalendar(int month, int year) {
     }
     cout << endl;
 
-    for (int i = 2; i <= daysInMonth / 7 + 1; ++i) {
+    for (int i = 2; i <= daysInMonth / 7 + 2; ++i) {
         for (int j = 0; j < 7 && day <= daysInMonth; ++j) {
             cout << setw(4) << day;
             day++;
