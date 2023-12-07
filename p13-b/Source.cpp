@@ -1,28 +1,44 @@
 #include <iostream>
+#include <string>
 using namespace std;
 
 bool isLeapYear(int year);
+int daysInMonth(int month, int year);
 
 int main() {
-	int num;
+	int month, year;
+	string monthName;
 	do {
-		cout << "Enter a year or Q to quit: ";
-		cin >> num;
+		cout << "Enter a month and year or Q to quit: ";
+		cin >> month >> year;
 
 		//CHECKS WHETHER INPUT IS Q OR q
-		if (num == 'Q' || num == 'q') {
+		if (year == 'Q' || year == 'q') {
 			break;
 		}
 
-		//CHECKS WHETHER INPUT IS A LEAP YEAR
 		if (!cin.fail()) {
-			bool leapYear = isLeapYear(num);
-			if (leapYear == true) {
-				cout << num << " is a leap year.\n";
+
+			//CHECKS THE MONTH NAME
+			switch (month) {
+			case 1: monthName = "January"; break;
+			case 2: monthName = "February"; break;
+			case 3: monthName = "March"; break;
+			case 4: monthName = "April"; break;
+			case 5: monthName = "May"; break;
+			case 6: monthName = "June"; break;
+			case 7: monthName = "July"; break;
+			case 8: monthName = "August"; break;
+			case 9: monthName = "September"; break;
+			case 10: monthName = "October"; break;
+			case 11: monthName = "November"; break;
+			case 12: monthName = "December"; break;
 			}
-			else {
-				cout << num << " is not a leap year.\n";
-			}
+
+			//CHECKS THE AMOUNT OF DAYS IN THE MONTH
+			int days = daysInMonth(month, year);
+			cout << monthName << " " << year << " has " << days << " days.\n";
+
 		}
 	} while (!cin.fail());
 
@@ -51,4 +67,46 @@ bool isLeapYear(int year) {
 	else {
 		return false;
 	}
+}
+
+/*
+daysInMonth - determines the number of days in a specified month
+@param month the month; expdcted to be in the range (1-12)
+@param year the year; expected to be >=1582
+@return either 28, 29, 30, or 31, based on month and (leap) year
+*/
+int daysInMonth(int month, int year) {
+	bool leapYearCheck = isLeapYear(year);
+	if (month == 2 && leapYearCheck == true) {
+		return 29;
+	}
+	else if (month == 2 && leapYearCheck == false) {
+		return 28;
+	}
+	switch (month) {
+	case 1:
+		return 31; break;
+	case 3:
+		return 31;  break;
+	case 4:
+		return 30;  break;
+	case 5:
+		return 31;  break;
+	case 6:
+		return 30;  break;
+	case 7:
+		return 31; break;
+	case 8:
+		return 31; break;
+	case 9:
+		return 30; break;
+	case 10:
+		return 31;  break;
+	case 11:
+		return 30; break;
+	case 12:
+		return 31;  break;
+	default: break;
+	}
+
 }
