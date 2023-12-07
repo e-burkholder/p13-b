@@ -1,155 +1,133 @@
 #include <iostream>
+#include <fstream>
+#include <iomanip>
 #include <string>
-#include <cmath>
 using namespace std;
 
-bool isLeapYear(int year);
-int daysInMonth(int month, int year);
-int dayOfWeek(int month, int day, int year);
+bool isLeapYear(int year) {
+    return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
+}
+
+int getNumberOfDays(int month, int year) {
+    if (month == 2) {
+        return isLeapYear(year) ? 29 : 28;
+    }
+    else if (month == 4 || month == 6 || month == 9 || month == 11) {
+        return 30;
+    }
+    else {
+        return 31;
+    }
+}
+
+int getMonthNumber(const string& month) {
+    if (month == "January") return 1;
+    if (month == "February") return 2;
+    if (month == "March") return 3;
+    if (month == "April") return 4;
+    if (month == "May") return 5;
+    if (month == "June") return 6;
+    if (month == "July") return 7;
+    if (month == "August") return 8;
+    if (month == "September") return 9;
+    if (month == "October") return 10;
+    if (month == "November") return 11;
+    if (month == "December") return 12;
+    return -1; // Invalid month
+}
+
+void displayCalendar(int month, int year) {
+    cout << "   --- " << month << "/" << year << " ---" << endl;
+    cout << " Sun Mon Tue Wed Thu Fri Sat" << endl;
+
+    // Get the day of the week for the first day of the month
+    int startDay = getNumberOfDays(1, year);
+    startDay = (startDay + 1) % 7; // 0 for Sunday, 1 for Monday, ...
+
+    int daysInMonth = getNumberOfDays(month, year);
+    int day = 1;
+
+    // Print spaces for the days before the start of the month
+    for (int i = 0; i < startDay; ++i) {
+        cout << setw(4) << " ";
+    }
+
+    // Print the days of the month
+    for (int i = startDay; i < 7; ++i) {
+        cout << setw(4) << day;
+        day++;
+    }
+    cout << endl;
+
+    for (int i = 2; i <= daysInMonth / 7 + 1; ++i) {
+        for (int j = 0; j < 7 && day <= daysInMonth; ++j) {
+            cout << setw(4) << day;
+            day++;
+        }
+        cout << endl;
+    }
+}
+
+void displayCalendar(int month, int year, ofstream& outputFile) {
+    outputFile << "   --- " << month << "/" << year << " ---" << endl;
+    outputFile << " Sun Mon Tue Wed Thu Fri Sat" << endl;
+
+    // Get the day of the week for the first day of the month
+    int startDay = getNumberOfDays(1, year);
+    startDay = (startDay + 1) % 7; // 0 for Sunday, 1 for Monday, ...
+
+    int daysInMonth = getNumberOfDays(month, year);
+    int day = 1;
+
+    // Print spaces for the days before the start of the month
+    for (int i = 0; i < startDay; ++i) {
+        outputFile << setw(4) << " ";
+    }
+
+    // Print the days of the month
+    for (int i = startDay; i < 7; ++i) {
+        outputFile << setw(4) << day;
+        day++;
+    }
+    outputFile << std::endl;
+
+    for (int i = 2; i <= daysInMonth / 7 + 1; ++i) {
+        for (int j = 0; j < 7 && day <= daysInMonth; ++j) {
+            outputFile << setw(4) << day;
+            day++;
+        }
+        outputFile << endl;
+    }
+}
 
 int main() {
-	int month, year, weekday, day;
-	string monthName, dayName;
-	do {
-		cout << "Enter a date or Q to quit: ";
-		cin >> month >> day >> year;
+    string inputMonth;
+    int year;
 
-		//CHECKS WHETHER INPUT IS Q OR q
-		if (year == 'Q' || year == 'q') {
-			break;
-		}
+    cout << "Enter the full name of the month: ";
+    cin >> inputMonth;
 
-		if (!cin.fail()) {
+    cout << "Enter the year: ";
+    cin >> year;
 
-			//CHECKS THE MONTH NAME
-			switch (month) {
-			case 1: monthName = "January"; break;
-			case 2: monthName = "February"; break;
-			case 3: monthName = "March"; break;
-			case 4: monthName = "April"; break;
-			case 5: monthName = "May"; break;
-			case 6: monthName = "June"; break;
-			case 7: monthName = "July"; break;
-			case 8: monthName = "August"; break;
-			case 9: monthName = "September"; break;
-			case 10: monthName = "October"; break;
-			case 11: monthName = "November"; break;
-			case 12: monthName = "December"; break;
-			}
+    int month = getMonthNumber(inputMonth);
 
-			//CHECKS THE AMOUNT OF DAYS IN THE MONTH
-			          //int days = daysInMonth(month, year);
-			weekday = dayOfWeek(month, day, year);
+    if (month == -1 || year < 0) {
+        cout << "Invalid month or year entered.\n";
+        return 1;
+    }
 
-			//CHECKS THE DAY NAME
-			switch (weekday) {
-			case 0: dayName = "Saturday"; break;
-			case 1: dayName = "Sunday"; break;
-			case 2: dayName = "Monday"; break;
-			case 3: dayName = "Tuesday"; break;
-			case 4: dayName = "Wednesday"; break;
-			case 5: dayName = "Thursday"; break;
-			case 6: dayName = "Friday"; break;
-			}
+    ofstream outputFile("calendar_output.txt");
+    if (!outputFile.is_open()) {
+        cout << "Unable to open the output file.\n";
+        return 1;
+    }
 
+    displayCalendar(month, year);
+    displayCalendar(month, year, outputFile);
 
-			cout << dayName << ", " << monthName << " " << day << ", " << year << "\n";
+    outputFile.close();
+    cout << "Calendar has been saved to 'calendar_output.txt'." << endl;
 
-		}
-	} while (!cin.fail());
-
-	return 0;
-}
-
-//FUNCTION DEFINITIONS
-/*isLeapYear - determines whether a given year is a leap year under the Gregorian calendar.
-@param year the year; expected to be >=1582
-@return true if the year is a leap year; false otherwise
-*/
-bool isLeapYear(int year) {
-	if (year % 4 == 0) {
-		if (year % 100 == 0) {
-			if (year % 400 == 0) {
-				return true;
-			}
-			else {
-				return false;
-			}
-		}
-		else {
-			return true;
-		}
-	}
-	else {
-		return false;
-	}
-}
-
-/*
-daysInMonth - determines the number of days in a specified month
-@param month the month; expdcted to be in the range (1-12)
-@param year the year; expected to be >=1582
-@return either 28, 29, 30, or 31, based on month and (leap) year
-*/
-int daysInMonth(int month, int year) {
-	bool leapYearCheck = isLeapYear(year);
-	if (month == 2 && leapYearCheck == true) {
-		return 29;
-	}
-	else if (month == 2 && leapYearCheck == false) {
-		return 28;
-	}
-	switch (month) {
-	case 1:
-		return 31; break;
-	case 3:
-		return 31;  break;
-	case 4:
-		return 30;  break;
-	case 5:
-		return 31;  break;
-	case 6:
-		return 30;  break;
-	case 7:
-		return 31; break;
-	case 8:
-		return 31; break;
-	case 9:
-		return 30; break;
-	case 10:
-		return 31;  break;
-	case 11:
-		return 30; break;
-	case 12:
-		return 31;  break;
-	default: break;
-	}
-
-}
-
-
-/*dayOfWeek - Computes the weekday of a given date.
-@param year the year
-@param month the month(1 = January... 12 = December)
-@param day the day of the month
-@return the weekday (0 = Saturday... 6 = Friday)
-*/
-int dayOfWeek(int month, int day, int year) {
-	int weekday;
-	int q = day;
-	int m = month;
-	if (m < 3) {
-		m = m + 12;
-	}
-	int y = year;
-	if (m > 12) {
-		y = y - 1;
-	}
-
-	cout << q << " " << m << " " << y << " \n";
-
-
-	weekday = ((y + (y/4)-(y/100)+(y/400)+((13*m)+8)/5+q)+1)%7;
-	cout << weekday << "\n";
-	return weekday;
+    return 0;
 }
